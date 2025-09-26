@@ -1,11 +1,10 @@
 import os, shutil
 import torch
-from torch.autograd import Variable
 
 def repackage_hidden(h):
     """Wraps hidden states in new Variables, to detach them from their history."""
-    if type(h) == Variable:
-        return Variable(h.data)
+    if isinstance(h, torch.Tensor):
+        return h.detach()
     else:
         return tuple(repackage_hidden(v) for v in h)
 
@@ -18,20 +17,26 @@ def batchify(data, bsz, args):
     data = data.view(bsz, -1).t().contiguous()
     print(data.size())
     if args.cuda:
-        data = data.cuda()
+        data = data.cuda(non_blocking=True)
     return data
 
 def get_batch(source, i, args, seq_len=None, evaluation=False):
     seq_len = min(seq_len if seq_len else args.bptt, len(source) - 1 - i)
-    data = Variable(source[i:i+seq_len], volatile=evaluation)
-    # target = Variable(source[i+1:i+1+seq_len].view(-1))
-    target = Variable(source[i+1:i+1+seq_len])
+    
+    # Remove Variable wrapper and volatile parameter
+    data = source[i:i+seq_len]
+    target = source[i+1:i+1+seq_len]
+    
+    # Set requires_grad based on evaluation mode
+    if not evaluation:
+        data = data.requires_grad_(False)  # Usually input doesn't need gradients
+        target = target.requires_grad_(False)
+    
     return data, target
 
 def create_exp_dir(path, scripts_to_save=None):
     if not os.path.exists(path):
         os.mkdir(path)
-
     print('Experiment dir : {}'.format(path))
     if scripts_to_save is not None:
         os.makedirs(os.path.join(path, 'scripts'), exist_ok=True)

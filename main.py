@@ -176,7 +176,7 @@ def evaluate(data_source, batch_size=10):
         total_loss += loss * len(data)
 
         hidden = repackage_hidden(hidden)
-    return total_loss[0] / len(data_source)
+    return total_loss.item() / len(data_source)
 
 
 def train():
@@ -221,7 +221,7 @@ def train():
             #regularize for prior
             prior_sum = prior.sum(0)
             cv = (prior_sum.var() * (prior_sum.size(1) - 1)).sqrt() / prior_sum.mean()
-            loss = loss + sum(args.var * cv * cv)
+            loss = loss + (args.var * cv * cv).sum()
             loss *= args.small_batch_size / args.batch_size
             total_loss += raw_loss.data * args.small_batch_size / args.batch_size
             loss.backward()
@@ -239,7 +239,7 @@ def train():
         # total_loss += raw_loss.data
         optimizer.param_groups[0]['lr'] = lr2
         if batch % args.log_interval == 0 and batch > 0:
-            cur_loss = total_loss[0] / args.log_interval
+            cur_loss = total_loss.item() / args.log_interval
             elapsed = time.time() - start_time
             logging('| epoch {:3d} | {:5d}/{:5d} batches | lr {:02.2f} | ms/batch {:5.2f} | '
                     'loss {:5.2f} | ppl {:8.2f}'.format(

@@ -116,21 +116,14 @@ print(f"Arch: {nlayers} layers, {nhid} hidden, {ninp} embed")
 print(f"Correcting Experts: {n_experts_true} experts")
 
 model = RNNModel(
-    args.model, 
-    ntoken=ntoken, 
-    ninp=ninp,
-    nhid=nhid,
-    nhidlast=nhidlast,
-    nlayers=nlayers,
-    dropout=drop_rate,
-    dropouth=get_val(checkpoint, 'dropouth', 0.225),
-    dropouti=get_val(checkpoint, 'dropouti', 0.4),
-    dropoute=get_val(checkpoint, 'dropoute', 0.1),
-    wdrop=wdrop_rate,
-    n_experts=n_experts_true, # SET TO 20
-    num4second=num4second_true # Ensure this is non-zero so weight4second is created
+    args.model, 10000, 280, 960, 620, 3, 
+    dropout=0.4, dropouth=0.225, dropouti=0.4, dropoute=0.1, 
+    wdrop=0.5, n_experts=20, num4second=5
 )
-print(model)
+
+# 4. Filter the state_dict to remove internal "flat" buffers
+# This prevents the old _flat_weights from ever touching your new model
+clean_sd = {k: v for k, v in checkpoint.state_dict().items() if '_flat_weights' not in k}
 
 # Run on val data.
 val_loss = evaluate(val_data, test_batch_size)

@@ -9,7 +9,6 @@ conda activate doc_lm
 echo "--- Installing PyTorch and ML Stack ---"
 # Using 1.12.1 for TITAN RTX / 3090 compatibility
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch -y
-pip install numpy scipy matplotlib tqdm wandb editdistance sentencepiece
 
 # 4. Create the MKL/iJIT Stub Fix
 echo "--- Applying Intel MKL Symbol Fix ---"

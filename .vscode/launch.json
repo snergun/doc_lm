@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
     
         {
             "type": "node",
@@ -25,6 +26,32 @@
                 "--data", "data/penn",
                 "--save", "trainedmodel/ptb/additional_finetuned.pt",
                 "--bptt", "1000",
+                ],
+        },
+        {
+            "name": "Python Debugger: Train Model",
+            "type": "debugpy",
+            "python": "/opt/conda/envs/doc_lm/bin/python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--data", "data/penn",
+                "--dropouti", "0.4",
+                "--dropoutl", "0.6",
+                "--dropouth", "0.225",
+                "--seed", "28",
+                "--batch_size", "12",
+                "--lr", "20.0",
+                "--epoch", "500",
+                "--nhid", "960",
+                "--nhidlast", "620",
+                "--emsize", "280",
+                "--n_experts", "15",
+                "--num4second", "5",
+                "--var", "0.001",
+                "--nonmono", "60",
+                "--single_gpu",
                 ],
         }
     ]

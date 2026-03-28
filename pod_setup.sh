@@ -1,8 +1,4 @@
-# 2. Create and activate environment
-if ! conda info --envs | grep -q "doc_lm"; then
-    echo "--- Creating Conda Environment 'doc_lm' ---"
-    conda create -n doc_lm python=3.8 -y
-fi
+conda create -n doc_lm python=3.8 -y
 conda activate doc_lm
 
 # 3. Install PyTorch and Dependencies
@@ -24,15 +20,16 @@ gcc -shared -fPIC -O2 -o "$CONDA_PREFIX/lib/libittnotify.so" "$CONDA_PREFIX/lib/
 # Add the fix to conda activation so it persists
 mkdir -p $CONDA_PREFIX/etc/conda/activate.d
 echo "export LD_PRELOAD=$CONDA_PREFIX/lib/libittnotify.so" > $CONDA_PREFIX/etc/conda/activate.d/env_vars.sh
+conda deactivate
+conda activate doc_lm
 
+# Download data
+bash get_data.sh
 
 # Download pretrained models
 pip install gdown
 gdown 1ug-6ISrXHEGcWTk5KIw8Ojdjuww-i-Ci
 tar -xzvf trainedmodel.tar.gz
-
-# Download data
-bash get_data.sh
 
 # Evaluate pretrained model
 python cal_ppl.py --data data/penn --save /home/jovyan/doc_lm/trainedmodel/ptb/additional_finetuned.pt --bptt 1000

@@ -67,7 +67,7 @@ def evaluate(data_source, batch_size=10):
         output_numpy = output.view(-1, ntokens).data.cpu().numpy()
         matrix_list.append(output_numpy)
     matrix = np.concatenate(matrix_list)
-    return total_loss[0] / len(data_source)
+    return total_loss.item() / len(data_source)
 
 
 # Load the best saved model.

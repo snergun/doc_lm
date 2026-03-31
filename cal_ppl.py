@@ -8,7 +8,7 @@ from torch.autograd import Variable
 
 import data
 import model
-
+import os
 from utils import batchify, get_batch, repackage_hidden
 
 parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
@@ -55,6 +55,7 @@ def evaluate(data_source, batch_size=10):
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(batch_size)
     matrix_list = []
+    targets_list = []
     prior_total = 0
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
@@ -66,8 +67,10 @@ def evaluate(data_source, batch_size=10):
         prior_total += prior.sum(0).data.cpu().numpy()
         output_numpy = output.view(-1, ntokens).data.cpu().numpy()
         matrix_list.append(output_numpy)
+        targets_list.append(targets.data.cpu().numpy())
     matrix = np.concatenate(matrix_list)
-    return total_loss.item() / len(data_source)
+    targets = np.concatenate(targets_list)
+    return total_loss.item() / len(data_source), matrix, targets
 
 
 # Load the best saved model.
@@ -79,14 +82,26 @@ with open(args.save, 'rb') as f:
 print(model)
 
 # Run on val data.
-val_loss = evaluate(val_data, test_batch_size)
+save_dir = os.path.dirname(args.save)
+results_dir = os.path.join(save_dir, 'results')
+if not os.path.exists(results_dir):
+    os.makedirs(results_dir)
+
+val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
+print(val_full_logits.shape)
+np.save(os.path.join(results_dir, 'val_full_logits.npy'), val_full_logits)
+np.save(os.path.join(results_dir, 'val_targets.npy'), val_targets)
+
 print('=' * 89)
 print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(
     val_loss, math.exp(val_loss)))
 print('=' * 89)
 
 # Run on test data.
-test_loss = evaluate(test_data, test_batch_size)
+test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size)
+print(test_full_logits.shape)
+np.save(os.path.join(results_dir, 'test_full_logits.npy'), test_full_logits)
+np.save(os.path.join(results_dir, 'test_targets.npy'), test_targets)
 print('=' * 89)
 print('| End of pointer | test loss {:5.2f} | test ppl {:8.2f}'.format(
     test_loss, math.exp(test_loss)))

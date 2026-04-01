@@ -83,14 +83,15 @@ print(model)
 
 # Run on val data.
 save_dir = os.path.dirname(args.save)
-results_dir = os.path.join(save_dir, 'results')
+model_name = os.path.basename(args.save).stript('.pt')
+results_dir = os.path.join(save_dir, model_name + '_results')
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)
 
 val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
 print(val_full_logits.shape)
-np.save(os.path.join(results_dir, 'val_full_logits.npy'), val_full_logits)
-np.save(os.path.join(results_dir, 'val_targets.npy'), val_targets)
+np.save(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
+np.save(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
 
 print('=' * 89)
 print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(
@@ -100,7 +101,7 @@ print('=' * 89)
 # Run on test data.
 test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size)
 print(test_full_logits.shape)
-np.save(os.path.join(results_dir, 'test_full_logits.npy'), test_full_logits)
+np.save(os.path.join(results_dir, 'test_full_prob.npy'), test_full_logits)
 np.save(os.path.join(results_dir, 'test_targets.npy'), test_targets)
 print('=' * 89)
 print('| End of pointer | test loss {:5.2f} | test ppl {:8.2f}'.format(

@@ -32,6 +32,6 @@ bash get_data.sh
 pip install gdown
 gdown 1ug-6ISrXHEGcWTk5KIw8Ojdjuww-i-Ci
 
-tar -xzvf trained_model.tar.gz
+tar -xzvf trainedmodel.tar.gz
 
 python cal_ppl.py --data data/penn --save /home/jovyan/doc_lm/trainedmodel/ptb/additional_finetuned.pt --bptt 1000

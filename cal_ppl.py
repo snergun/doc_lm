@@ -83,7 +83,7 @@ print(model)
 
 # Run on val data.
 save_dir = os.path.dirname(args.save)
-model_name = os.path.basename(args.save).stript('.pt')
+model_name = os.path.basename(args.save).strip('.pt')
 results_dir = os.path.join(save_dir, model_name + '_results')
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)

@@ -92,6 +92,7 @@ val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
 print(val_full_logits.shape)
 np.save(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
 np.save(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
+np.save(os.path.join(results_dir, 'validation_prob.npy'), val_full_logits[np.arange(len(val_targets)), val_targets])
 
 print('=' * 89)
 print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(
@@ -103,6 +104,7 @@ test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size)
 print(test_full_logits.shape)
 np.save(os.path.join(results_dir, 'test_full_prob.npy'), test_full_logits)
 np.save(os.path.join(results_dir, 'test_targets.npy'), test_targets)
+np.save(os.path.join(results_dir, 'test_prob.npy'), test_full_logits[np.arange(len(test_targets)), test_targets])
 print('=' * 89)
 print('| End of pointer | test loss {:5.2f} | test ppl {:8.2f}'.format(
     test_loss, math.exp(test_loss)))

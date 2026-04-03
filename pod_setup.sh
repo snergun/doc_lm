@@ -1,4 +1,5 @@
 echo "--- Creating Conda Environment 'doc_lm' ---"
+conda update -n base -c conda-forge conda -y
 conda create -n doc_lm python=3.8 -y
 conda activate doc_lm
 

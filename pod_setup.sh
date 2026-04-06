@@ -33,7 +33,7 @@ bash get_data.sh
 pip install gdown
 gdown 1ug-6ISrXHEGcWTk5KIw8Ojdjuww-i-Ci
 
-tar -xzvf trainedmodel.tar.gz# Function to reorganize checkpoint files
+tar -xzvf trainedmodel.tar.gz # Function to reorganize checkpoint files
 
 reorganize_checkpoints() {
     local checkpoint_dir="$1"
@@ -57,3 +57,5 @@ reorganize_checkpoints() {
 # Reorganize existing checkpoints before running the script
 reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/ptb"
 reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/ptb_ensemble"
+
+bash cache_probs.sh

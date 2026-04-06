@@ -2,6 +2,7 @@ import argparse
 import time
 import math
 import numpy as np
+from numpy.lib.format import open_memmap
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -10,6 +11,7 @@ import data
 import model
 import os
 from utils import batchify, get_batch, repackage_hidden
+
 
 parser = argparse.ArgumentParser(description='PyTorch PennTreeBank RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='data/penn',
@@ -93,12 +95,19 @@ with open(model_path, 'rb') as f:
         model = torch.load(f)
 print(model)
 
+def save_memmap(filename, x):
+    if isinstance(x, torch.Tensor):
+        tensor = x.cpu().numpy()
+    # Save the array to a .npy file using memory mapping
+    memmap_array = open_memmap(filename, mode='w+', dtype=tensor.dtype, shape=tensor.shape)
+    memmap_array[:] = tensor[:]
+    del memmap_array  # Flush changes to disk
 # Run on val data.
 val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
 print(val_full_logits.shape)
-np.save(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
-np.save(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
-np.save(os.path.join(results_dir, 'validation_prob.npy'), val_full_logits[np.arange(len(val_targets)), val_targets])
+save_memmap(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
+save_memmap(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
+save_memmap(os.path.join(results_dir, 'validation_prob.npy'), val_full_logits[np.arange(len(val_targets)), val_targets])
 
 print('=' * 89)
 print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(
@@ -108,9 +117,9 @@ print('=' * 89)
 # Run on test data.
 test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size)
 print(test_full_logits.shape)
-np.save(os.path.join(results_dir, 'test_full_prob.npy'), test_full_logits)
-np.save(os.path.join(results_dir, 'test_targets.npy'), test_targets)
-np.save(os.path.join(results_dir, 'test_prob.npy'), test_full_logits[np.arange(len(test_targets)), test_targets])
+save_memmap(os.path.join(results_dir, 'test_full_prob.npy'), test_full_logits)
+save_memmap(os.path.join(results_dir, 'test_targets.npy'), test_targets)
+save_memmap(os.path.join(results_dir, 'test_prob.npy'), test_full_logits[np.arange(len(test_targets)), test_targets])
 print('=' * 89)
 print('| End of pointer | test loss {:5.2f} | test ppl {:8.2f}'.format(
     test_loss, math.exp(test_loss)))

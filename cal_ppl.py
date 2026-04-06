@@ -72,9 +72,21 @@ def evaluate(data_source, batch_size=10):
     targets = np.concatenate(targets_list)
     return total_loss.item() / len(data_source), matrix, targets
 
+if args.save.endswith('.pt'):
+    model_path = args.save
+    model_name = os.path.basename(model_path).strip('.pt')
+    os.makedirs(os.path.join(os.path.dirname(model_path), model_name), exist_ok=True)
+    results_dir = os.path.join(os.path.dirname(model_path), model_name, "results")
+else:
+    model_path = os.path.join(args.save, 'model.pt')
+    model_name = os.path.basename(args.save)
+    results_dir = os.path.join(args.save, "results")
+
+
+os.makedirs(results_dir, exist_ok=True)
 
 # Load the best saved model.
-with open(args.save, 'rb') as f:
+with open(model_path, 'rb') as f:
     if not args.cuda:
         model = torch.load(f, map_location=lambda storage, loc: storage)
     else:
@@ -82,12 +94,6 @@ with open(args.save, 'rb') as f:
 print(model)
 
 # Run on val data.
-save_dir = os.path.dirname(args.save)
-model_name = os.path.basename(args.save).strip('.pt')
-results_dir = os.path.join(save_dir, model_name + '_results')
-if not os.path.exists(results_dir):
-    os.makedirs(results_dir)
-
 val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
 print(val_full_logits.shape)
 np.save(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)

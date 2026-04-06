@@ -33,6 +33,27 @@ bash get_data.sh
 pip install gdown
 gdown 1ug-6ISrXHEGcWTk5KIw8Ojdjuww-i-Ci
 
-tar -xzvf trainedmodel.tar.gz
+tar -xzvf trainedmodel.tar.gz# Function to reorganize checkpoint files
 
-python cal_ppl.py --data data/penn --save /home/jovyan/doc_lm/trainedmodel/ptb/additional_finetuned.pt --bptt 1000
+reorganize_checkpoints() {
+    local checkpoint_dir="$1"
+    
+    # Find all .pt files in the directory
+    find "$checkpoint_dir" -maxdepth 1 -name "*.pt" -type f | while read -r checkpoint; do
+        # Get filename without extension
+        local filename=$(basename "$checkpoint" .pt)
+        
+        # Create directory for the model
+        local model_dir="$checkpoint_dir/$filename"
+        mkdir -p "$model_dir"
+        
+        # Move checkpoint to model.pt inside the directory
+        mv "$checkpoint" "$model_dir/model.pt"
+        
+        echo "Reorganized: $filename -> $model_dir/model.pt"
+    done
+}
+
+# Reorganize existing checkpoints before running the script
+reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/ptb"
+reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/ptb_ensemble"

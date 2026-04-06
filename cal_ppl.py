@@ -97,10 +97,10 @@ print(model)
 
 def save_memmap(filename, x):
     if isinstance(x, torch.Tensor):
-        tensor = x.cpu().numpy()
+        x = x.cpu().numpy()
     # Save the array to a .npy file using memory mapping
-    memmap_array = open_memmap(filename, mode='w+', dtype=tensor.dtype, shape=tensor.shape)
-    memmap_array[:] = tensor[:]
+    memmap_array = open_memmap(filename, mode='w+', dtype=x.dtype, shape=x.shape)
+    memmap_array[:] = x[:]
     del memmap_array  # Flush changes to disk
 # Run on val data.
 val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)

@@ -66,7 +66,7 @@ def evaluate(data_source, batch_size=10, name="validation"):
     # 'w+' creates/overwrites the file
     full_probs_mmap = open_memmap(prob_path, mode='w+', dtype='float32', shape=(total_tokens, ntokens))
     targets_mmap = open_memmap(target_path, mode='w+', dtype='int64', shape=(total_tokens,))
-    
+
     prior_total = 0
     pointer = 0
     for i in range(0, data_source.size(0) - 1, args.bptt):
@@ -112,19 +112,9 @@ with open(model_path, 'rb') as f:
         model = torch.load(f)
 print(model)
 
-# def save_memmap(filename, x):
-#     if isinstance(x, torch.Tensor):
-#         x = x.cpu().numpy()
-#     # Save the array to a .npy file using memory mapping
-#     memmap_array = open_memmap(filename, mode='w+', dtype=x.dtype, shape=x.shape)
-#     memmap_array[:] = x[:]
-#     del memmap_array  # Flush changes to disk
 # Run on val data.
 val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
-# print(val_full_logits.shape)
-# save_memmap(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
-# save_memmap(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
-# save_memmap(os.path.join(results_dir, 'validation_prob.npy'), val_full_logits[np.arange(len(val_targets)), val_targets])
+
 
 print('=' * 89)
 print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(
@@ -134,9 +124,6 @@ print('=' * 89)
 # Run on test data.
 test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size)
 print(test_full_logits.shape)
-save_memmap(os.path.join(results_dir, 'test_full_prob.npy'), test_full_logits)
-save_memmap(os.path.join(results_dir, 'test_targets.npy'), test_targets)
-save_memmap(os.path.join(results_dir, 'test_prob.npy'), test_full_logits[np.arange(len(test_targets)), test_targets])
 print('=' * 89)
 print('| End of pointer | test loss {:5.2f} | test ppl {:8.2f}'.format(
     test_loss, math.exp(test_loss)))

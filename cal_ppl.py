@@ -50,29 +50,44 @@ def one_hot(idx, size, cuda=True):
     if cuda: v = v.cuda()
     return v
 
-def evaluate(data_source, batch_size=10):
+def evaluate(data_source, batch_size=10, name="validation"):
     # Turn on evaluation mode which disables dropout.
+    total_tokens = data_source.size(0) - 1
+    # Pre-allocate memmap files on disk (avoids RAM spikes)
+    prob_path = os.path.join(results_dir, f'{name}_full_prob.npy')
+    target_path = os.path.join(results_dir, f'{name}_targets.npy')
+    # 'w+' creates/overwrites the file
+    full_probs_mmap = open_memmap(prob_path, mode='w+', dtype='float32', shape=(total_tokens, ntokens))
+    targets_mmap = open_memmap(target_path, mode='w+', dtype='int64', shape=(total_tokens,))
     model.eval()
+
     total_loss = 0
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(batch_size)
-    matrix_list = []
-    targets_list = []
+
     prior_total = 0
+    pointer = 0
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, args, evaluation=True)
         targets = targets.view(-1)
         output, hidden, rnn_outs, _, prior = model(data, hidden, return_h=True)
-        loss = nn.functional.nll_loss(output.view(-1, ntokens), targets).data
+        # Loss calculation
+        loss = nn.functional.nll_loss(output.view(-1, ntokens), targets.view(-1)).data
         total_loss += loss * len(data)
         hidden = repackage_hidden(hidden)
-        prior_total += prior.sum(0).data.cpu().numpy()
-        output_numpy = output.view(-1, ntokens).data.cpu().numpy()
-        matrix_list.append(output_numpy)
-        targets_list.append(targets.data.cpu().numpy())
-    matrix = np.concatenate(matrix_list)
-    targets = np.concatenate(targets_list)
-    return total_loss.item() / len(data_source), matrix, targets
+
+        # Write slice to disk
+        batch_logits = output.view(-1, ntokens).data.cpu().numpy()
+        batch_targets = targets.view(-1).data.cpu().numpy()
+        
+        num_elements = batch_logits.shape[0]
+        full_probs_mmap[pointer : pointer + num_elements] = batch_logits
+        targets_mmap[pointer : pointer + num_elements] = batch_targets
+        pointer += num_elements
+    full_probs_mmap.flush()
+    targets_mmap.flush()
+
+    return total_loss.item() / len(data_source), full_probs_mmap, targets_mmap
 
 if args.save.endswith('.pt'):
     model_path = args.save
@@ -95,19 +110,25 @@ with open(model_path, 'rb') as f:
         model = torch.load(f)
 print(model)
 
-def save_memmap(filename, x):
-    if isinstance(x, torch.Tensor):
-        x = x.cpu().numpy()
-    # Save the array to a .npy file using memory mapping
-    memmap_array = open_memmap(filename, mode='w+', dtype=x.dtype, shape=x.shape)
-    memmap_array[:] = x[:]
-    del memmap_array  # Flush changes to disk
+if args.cuda:
+    print("Using CUDA")
+    model.cuda()
+else:
+    print("Using CPU")
+    
+# def save_memmap(filename, x):
+#     if isinstance(x, torch.Tensor):
+#         x = x.cpu().numpy()
+#     # Save the array to a .npy file using memory mapping
+#     memmap_array = open_memmap(filename, mode='w+', dtype=x.dtype, shape=x.shape)
+#     memmap_array[:] = x[:]
+#     del memmap_array  # Flush changes to disk
 # Run on val data.
 val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
-print(val_full_logits.shape)
-save_memmap(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
-save_memmap(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
-save_memmap(os.path.join(results_dir, 'validation_prob.npy'), val_full_logits[np.arange(len(val_targets)), val_targets])
+# print(val_full_logits.shape)
+# save_memmap(os.path.join(results_dir, 'validation_full_prob.npy'), val_full_logits)
+# save_memmap(os.path.join(results_dir, 'validation_targets.npy'), val_targets)
+# save_memmap(os.path.join(results_dir, 'validation_prob.npy'), val_full_logits[np.arange(len(val_targets)), val_targets])
 
 print('=' * 89)
 print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(

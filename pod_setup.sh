@@ -54,9 +54,9 @@ reorganize_checkpoints() {
 }
 
 # Reorganize existing checkpoints before running the script
-reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/ptb"
-reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/ptb_ensemble"
-reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/wikitext2"
-reorganize_checkpoints "/home/jovyan/doc_lm/trainedmodel/wikitext2_ensemble"
+reorganize_checkpoints "trainedmodel/ptb"
+reorganize_checkpoints "trainedmodel/ptb_ensemble"
+reorganize_checkpoints "trainedmodel/wikitext2"
+reorganize_checkpoints "trainedmodel/wikitext2_ensemble"
 
 bash cache_probs.sh

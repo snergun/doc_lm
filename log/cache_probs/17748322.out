@@ -1,0 +1,163 @@
+Running "module reset". Resetting modules to system default. The following $MODULEPATH directories have been removed: /sw/rh9.4/spack/default/modules/lmod/linux-rhel9-x86_64/Core
+=====================================================
+Conda-Forge PyTorch 2.8 Environment Loaded Successfully!
+=====================================================
+
+To activate the environment:
+  conda activate base
+
+If 'conda activate' fails, use:
+  source $CONDA_PREFIX/etc/profile.d/conda.sh && conda activate base
+
+To verify PyTorch installation:
+  python -c "import torch; print(f'PyTorch {torch.__version__} CUDA:
+{torch.cuda.is_available()}')"
+
+Environment includes:
+  - PyTorch 2.8 with CUDA 12.8 support
+  - Scientific Python stack (numpy, scipy, pandas)
+  - ML libraries (transformers, lightning, timm)
+  - Cray PE integration with optimized MPI
+
+For Jupyter notebook support:
+  setup-kernel (creates Jupyter kernel for this environment)
+
+For distributed training, load:
+  module load aws-ofi-nccl/1.14.2
+
+Ready for single-node and distributed training!
+=====================================================
+
+job is starting on gpua032.delta.ncsa.illinois.edu
+torch.Size([2088628, 1])
+torch.Size([217646, 1])
+torch.Size([245569, 1])
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'model.RNNModel' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.sparse.Embedding' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.container.ModuleList' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'weight_drop.WeightDrop' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.rnn.LSTM' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.linear.Linear' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+RNNModel(
+  (lockdrop): LockedDropout()
+  (encoder): Embedding(33278, 300)
+  (rnns): ModuleList(
+    (0): WeightDrop(
+      (module): LSTM(300, 1150)
+    )
+    (1): WeightDrop(
+      (module): LSTM(1150, 1150)
+    )
+    (2): WeightDrop(
+      (module): LSTM(1150, 650)
+    )
+  )
+  (prior): Linear(in_features=650, out_features=20, bias=False)
+  (latent): Linear(in_features=650, out_features=4500, bias=True)
+  (weight4second): Linear(in_features=1150, out_features=1500, bias=True)
+  (decoder): Linear(in_features=300, out_features=33278, bias=True)
+)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/nn/modules/rnn.py:769: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters(). (Triggered internally at  /opt/conda/conda-bld/pytorch_1659484810403/work/aten/src/ATen/native/cudnn/RNN.cpp:968.)
+  result = _VF.lstm(input, hx, self._flat_weights, self.bias, self.num_layers,
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/nn/functional.py:1949: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.
+  warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")
+/work/hdd/bcyi/eergun/doc_lm/model.py:137: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  prior = nn.functional.softmax(prior_logit)
+/work/hdd/bcyi/eergun/doc_lm/model.py:139: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  prob = nn.functional.softmax(logit.view(-1, self.ntoken)).view(-1, self.all_experts, self.ntoken)
+/var/spool/slurmd/job17748322/slurm_script: line 22: 1467467 Killed                  python cal_ppl.py --data data/wikitext-2 --save trainedmodel/wikitext2/additional_finetuned --bptt 1000
+Running seed 0
+torch.Size([2088628, 1])
+torch.Size([217646, 1])
+torch.Size([245569, 1])
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'model.RNNModel' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.sparse.Embedding' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.container.ModuleList' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'weight_drop.WeightDrop' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.rnn.LSTM' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.linear.Linear' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+RNNModel(
+  (lockdrop): LockedDropout()
+  (encoder): Embedding(33278, 300)
+  (rnns): ModuleList(
+    (0): WeightDrop(
+      (module): LSTM(300, 1150)
+    )
+    (1): WeightDrop(
+      (module): LSTM(1150, 1150)
+    )
+    (2): WeightDrop(
+      (module): LSTM(1150, 650)
+    )
+  )
+  (prior): Linear(in_features=650, out_features=20, bias=False)
+  (latent): Linear(in_features=650, out_features=4500, bias=True)
+  (weight4second): Linear(in_features=1150, out_features=1500, bias=True)
+  (decoder): Linear(in_features=300, out_features=33278, bias=True)
+)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/nn/modules/rnn.py:769: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters(). (Triggered internally at  /opt/conda/conda-bld/pytorch_1659484810403/work/aten/src/ATen/native/cudnn/RNN.cpp:968.)
+  result = _VF.lstm(input, hx, self._flat_weights, self.bias, self.num_layers,
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/nn/functional.py:1949: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.
+  warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")
+/work/hdd/bcyi/eergun/doc_lm/model.py:137: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  prior = nn.functional.softmax(prior_logit)
+/work/hdd/bcyi/eergun/doc_lm/model.py:139: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  prob = nn.functional.softmax(logit.view(-1, self.ntoken)).view(-1, self.all_experts, self.ntoken)
+/var/spool/slurmd/job17748322/slurm_script: line 23: 1468205 Killed                  python cal_ppl.py --data data/wikitext-2 --save trainedmodel/wikitext2_ensemble/seed"$seed"_additional_finetuned --bptt 1000
+Running seed 1
+torch.Size([2088628, 1])
+torch.Size([217646, 1])
+torch.Size([245569, 1])
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'model.RNNModel' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.sparse.Embedding' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.container.ModuleList' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'weight_drop.WeightDrop' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.rnn.LSTM' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/serialization.py:786: SourceChangeWarning: source code of class 'torch.nn.modules.linear.Linear' has changed. you can retrieve the original source code by accessing the object's source attribute or set `torch.nn.Module.dump_patches = True` and use the patch tool to revert the changes.
+  warnings.warn(msg, SourceChangeWarning)
+RNNModel(
+  (lockdrop): LockedDropout()
+  (encoder): Embedding(33278, 300)
+  (rnns): ModuleList(
+    (0): WeightDrop(
+      (module): LSTM(300, 1150)
+    )
+    (1): WeightDrop(
+      (module): LSTM(1150, 1150)
+    )
+    (2): WeightDrop(
+      (module): LSTM(1150, 650)
+    )
+  )
+  (prior): Linear(in_features=650, out_features=20, bias=False)
+  (latent): Linear(in_features=650, out_features=4500, bias=True)
+  (weight4second): Linear(in_features=1150, out_features=1500, bias=True)
+  (decoder): Linear(in_features=300, out_features=33278, bias=True)
+)
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/nn/modules/rnn.py:769: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters(). (Triggered internally at  /opt/conda/conda-bld/pytorch_1659484810403/work/aten/src/ATen/native/cudnn/RNN.cpp:968.)
+  result = _VF.lstm(input, hx, self._flat_weights, self.bias, self.num_layers,
+/u/eergun/.conda/envs/doc_lm/lib/python3.8/site-packages/torch/nn/functional.py:1949: UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.
+  warnings.warn("nn.functional.tanh is deprecated. Use torch.tanh instead.")
+/work/hdd/bcyi/eergun/doc_lm/model.py:137: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  prior = nn.functional.softmax(prior_logit)
+/work/hdd/bcyi/eergun/doc_lm/model.py:139: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  prob = nn.functional.softmax(logit.view(-1, self.ntoken)).view(-1, self.all_experts, self.ntoken)
+[2026-04-20T13:12:41.661] error: *** JOB 17748322 ON gpua032 CANCELLED AT 2026-04-20T13:12:41 DUE to SIGNAL Terminated ***
+[2026-04-20T13:12:41.668] error: Detected 2 oom_kill events in StepId=17748322.batch. Some of the step tasks have been OOM Killed.

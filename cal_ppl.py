@@ -53,18 +53,20 @@ def one_hot(idx, size, cuda=True):
 def evaluate(data_source, batch_size=10, name="validation"):
     # Turn on evaluation mode which disables dropout.
     total_tokens = data_source.size(0) - 1
-    # Pre-allocate memmap files on disk (avoids RAM spikes)
-    prob_path = os.path.join(results_dir, f'{name}_full_prob.npy')
-    target_path = os.path.join(results_dir, f'{name}_targets.npy')
-    # 'w+' creates/overwrites the file
-    full_probs_mmap = open_memmap(prob_path, mode='w+', dtype='float32', shape=(total_tokens, ntokens))
-    targets_mmap = open_memmap(target_path, mode='w+', dtype='int64', shape=(total_tokens,))
+
     model.eval()
 
     total_loss = 0
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(batch_size)
 
+    # Pre-allocate memmap files on disk (avoids RAM spikes)
+    prob_path = os.path.join(results_dir, f'{name}_full_prob.npy')
+    target_path = os.path.join(results_dir, f'{name}_targets.npy')
+    # 'w+' creates/overwrites the file
+    full_probs_mmap = open_memmap(prob_path, mode='w+', dtype='float32', shape=(total_tokens, ntokens))
+    targets_mmap = open_memmap(target_path, mode='w+', dtype='int64', shape=(total_tokens,))
+    
     prior_total = 0
     pointer = 0
     for i in range(0, data_source.size(0) - 1, args.bptt):
@@ -110,12 +112,6 @@ with open(model_path, 'rb') as f:
         model = torch.load(f)
 print(model)
 
-if args.cuda:
-    print("Using CUDA")
-    model.cuda()
-else:
-    print("Using CPU")
-    
 # def save_memmap(filename, x):
 #     if isinstance(x, torch.Tensor):
 #         x = x.cpu().numpy()

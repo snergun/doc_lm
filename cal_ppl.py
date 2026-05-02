@@ -113,7 +113,7 @@ with open(model_path, 'rb') as f:
 print(model)
 
 # Run on val data.
-val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size)
+val_loss, val_full_logits, val_targets = evaluate(val_data, test_batch_size, name="validation")
 
 
 print('=' * 89)
@@ -122,7 +122,7 @@ print('| End of pointer | val loss {:5.2f} | val ppl {:8.2f}'.format(
 print('=' * 89)
 
 # Run on test data.
-test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size)
+test_loss, test_full_logits, test_targets = evaluate(test_data, test_batch_size, name="test")
 print(test_full_logits.shape)
 print('=' * 89)
 print('| End of pointer | test loss {:5.2f} | test ppl {:8.2f}'.format(

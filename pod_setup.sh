@@ -58,5 +58,3 @@ reorganize_checkpoints "trainedmodel/ptb"
 reorganize_checkpoints "trainedmodel/ptb_ensemble"
 reorganize_checkpoints "trainedmodel/wikitext2"
 reorganize_checkpoints "trainedmodel/wikitext2_ensemble"
-
-bash cache_probs.sh
